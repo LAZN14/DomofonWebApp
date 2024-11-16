@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+</head>
+<body>
+    <div class="auth-form">
+        <h1 class="form-title">Добро пожаловать</h1>
+        <form id="loginForm">
+            <div class="input-group">
+                <input 
+                    type="tel" 
+                    id="phone" 
+                    placeholder="Введите номер телефона"
+                    required
+                    pattern="[0-9]{11}"
+                >
+            </div>
+            <button type="submit" class="login-btn">Войти</button>
+        </form>
+
+        <div class="or-divider">или</div>
+
+        <button onclick="loginWithFaceID()" class="faceid-btn">
+            <svg class="face-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 10H7V12H9V10Z" fill="currentColor"/>
+                <path d="M17 10H15V12H17V10Z" fill="currentColor"/>
+                <path d="M12 17C14.2091 17 16 15.2091 16 13H8C8 15.2091 9.79086 17 12 17Z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12ZM20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12Z" fill="currentColor"/>
+            </svg>
+            Войти по Face ID
+        </button>
+    </div>
+
+    <!-- Модальное окно для Face ID -->
+    <div id="faceID-modal">
+        <div class="modal-content">
+            <video id="video" width="640" height="480" autoplay></video>
+            <div class="scan-progress">
+                <div class="scan-progress-bar" id="scanProgress"></div>
+            </div>
+            <div id="loading-message">Загрузка...</div>
+            <button class="close-modal" onclick="closeFaceIDModal()">×</button>
+        </div>
+    </div>
+
+    <script src="js/face-recognition.js"></script>
+</body>
+</html> 

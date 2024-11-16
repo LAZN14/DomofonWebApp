@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .profile-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .welcome-title {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .welcome-subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .nav-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            padding: 20px;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-intercom {
+            background: linear-gradient(135deg, #20bf55 0%, #01baef 100%);
+        }
+
+        .btn-intercom:hover {
+            box-shadow: 0 5px 15px rgba(32, 191, 85, 0.4);
+        }
+
+        .btn-residents {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        }
+
+        .btn-residents:hover {
+            box-shadow: 0 5px 15px rgba(246, 211, 101, 0.4);
+        }
+
+        .logout-btn {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee0000 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(238, 0, 0, 0.4);
+        }
+
+        @media (max-width: 480px) {
+            .profile-card {
+                padding: 30px 20px;
+            }
+
+            .welcome-title {
+                font-size: 24px;
+            }
+
+            .nav-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .register-faceid-btn {
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #20bf55 0%, #01baef 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .register-faceid-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .register-faceid-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(32, 191, 85, 0.4);
+        }
+
+        .scan-progress {
+            width: 100%;
+            max-width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            margin: 10px auto;
+            overflow: hidden;
+        }
+
+        .scan-progress-bar {
+            width: 0%;
+            height: 100%;
+            background: #20bf55;
+            transition: width 0.3s ease;
+        }
+
+        .modal-content {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 20px;
+        }
+
+        #faceID-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+        }
+
+        #video {
+            border-radius: 20px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        #loading-message {
+            color: white;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile-card">
+            <h1 class="welcome-title">Добро пожаловать!</h1>
+            <p class="welcome-subtitle">Вы авторизовались</p>
+            
+            <div class="nav-buttons">
+                <a href="intercom.html" class="nav-btn btn-intercom">
+                    Просмотр домофонов
+                </a>
+                <a href="residents.html" class="nav-btn btn-residents">
+                    Просмотр жильцов
+                </a>
+            </div>
+
+            <button onclick="registerFaceID()" class="register-faceid-btn" id="registerFaceIDBtn">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 10H7V12H9V10Z" fill="currentColor"/>
+                    <path d="M17 10H15V12H17V10Z" fill="currentColor"/>
+                    <path d="M12 17C14.2091 17 16 15.2091 16 13H8C8 15.2091 9.79086 17 12 17Z" fill="currentColor"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12ZM20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12Z" fill="currentColor"/>
+                </svg>
+                Зарегистрировать Face ID
+            </button>
+
+            <button class="logout-btn" onclick="logout()">Выйти</button>
+        </div>
+    </div>
+
+    <div id="faceID-modal">
+        <div class="modal-content">
+            <video id="video" width="640" height="480" autoplay></video>
+            <div class="scan-progress">
+                <div class="scan-progress-bar" id="scanProgress"></div>
+            </div>
+            <div id="loading-message">Загрузка...</div>
+            <button class="close-modal" onclick="closeFaceIDModal()">×</button>
+        </div>
+    </div>
+
+    <script>
+        const userPhone = localStorage.getItem('userPhone');
+        if (!userPhone) {
+            window.location.href = 'index.html';
+        }
+
+        if (localStorage.getItem('faceID_' + userPhone)) {
+            document.getElementById('registerFaceIDBtn').style.display = 'none';
+        }
+        
+        let isModelLoaded = false;
+
+        async function loadFaceAPIModels() {
+            if (!isModelLoaded) {
+                const loadingMessage = document.getElementById('loading-message');
+                loadingMessage.textContent = 'Загрузка моделей...';
+                
+                try {
+                    await faceapi.nets.tinyFaceDetector.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
+                    await faceapi.nets.faceLandmark68Net.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
+                    await faceapi.nets.faceRecognitionNet.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
+                    
+                    isModelLoaded = true;
+                    loadingMessage.textContent = 'Смотрите в камеру';
+                } catch (error) {
+                    loadingMessage.textContent = 'Ошибка загрузки моделей';
+                    console.error('Ошибка загрузки моделей:', error);
+                }
+            }
+        }
+
+        let isScanning = false;
+        let scanAttempts = 0;
+        const MAX_SCAN_ATTEMPTS = 3;
+        let confidenceScores = [];
+
+        async function registerFaceID() {
+            if (isScanning) return;
+            isScanning = true;
+            scanAttempts = 0;
+            confidenceScores = [];
+            
+            try {
+                const modal = document.getElementById('faceID-modal');
+                const video = document.getElementById('video');
+                const progressBar = document.getElementById('scanProgress');
+                modal.style.display = 'block';
+                progressBar.style.width = '0%';
+
+                await loadFaceAPIModels();
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        facingMode: 'user',
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    } 
+                });
+                
+                video.srcObject = stream;
+                video.addEventListener('play', startFaceDetection);
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+                isScanning = false;
+                alert('Ошибка при запуске камеры: ' + error.message);
+                closeFaceIDModal();
+            }
+        }
+
+        async function startFaceDetection() {
+            const video = document.getElementById('video');
+            const loadingMessage = document.getElementById('loading-message');
+            const progressBar = document.getElementById('scanProgress');
+            
+            loadingMessage.textContent = 'Идет сканирование лица...';
+            
+            const detectionInterval = setInterval(async () => {
+                if (!isScanning || scanAttempts >= MAX_SCAN_ATTEMPTS) {
+                    clearInterval(detectionInterval);
+                    return;
+                }
+
+                try {
+                    const detections = await faceapi.detectAllFaces(video, 
+                        new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.7 }))
+                        .withFaceLandmarks()
+                        .withFaceDescriptors();
+
+                    if (detections.length === 1) {
+                        scanAttempts++;
+                        confidenceScores.push(detections[0].detection.score);
+                        
+                        // Обновляем прогресс-бар
+                        progressBar.style.width = `${(scanAttempts / MAX_SCAN_ATTEMPTS) * 100}%`;
+                        
+                        if (scanAttempts >= MAX_SCAN_ATTEMPTS) {
+                            await processFaceDetection(detections[0].descriptor);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Ошибка при сканировании:', error);
+                }
+            }, 500);
+        }
+
+        async function processFaceDetection(descriptor) {
+            const loadingMessage = document.getElementById('loading-message');
+            const averageConfidence = confidenceScores.reduce((a, b) => a + b, 0) / confidenceScores.length;
+
+            if (averageConfidence > 0.8) {
+                loadingMessage.textContent = 'Лицо успешно зарегистрировано!';
+                
+                try {
+                    // Отправляем дескриптор на сервер
+                    const response = await fetch('/api/face-recognition/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            phoneNumber: userPhone,
+                            descriptor: Array.from(descriptor)
+                        })
+                    });
+
+                    if (response.ok) {
+                        localStorage.setItem('faceID_' + userPhone, JSON.stringify(Array.from(descriptor)));
+                        setTimeout(() => {
+                            closeFaceIDModal();
+                            document.getElementById('registerFaceIDBtn').style.display = 'none';
+                            alert('Face ID успешно зарегистрирован!');
+                        }, 1000);
+                    } else {
+                        throw new Error('Ошибка сохранения');
+                    }
+                } catch (error) {
+                    console.error('Ошибка сохранения:', error);
+                    alert('Ошибка при сохранении Face ID');
+                }
+            } else {
+                loadingMessage.textContent = 'Недостаточное качество изображения. Попробуйте еще раз.';
+                setTimeout(() => {
+                    scanAttempts = 0;
+                    confidenceScores = [];
+                    document.getElementById('scanProgress').style.width = '0%';
+                    loadingMessage.textContent = 'Идет сканирование лица...';
+                }, 2000);
+            }
+        }
+
+        function closeFaceIDModal() {
+            const modal = document.getElementById('faceID-modal');
+            const video = document.getElementById('video');
+            
+            if (video.srcObject) {
+                video.srcObject.getTracks().forEach(track => track.stop());
+            }
+            
+            isScanning = false;
+            scanAttempts = 0;
+            confidenceScores = [];
+            document.getElementById('scanProgress').style.width = '0%';
+            modal.style.display = 'none';
+        }
+
+        function logout() {
+            localStorage.removeItem('userPhone');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html> 
